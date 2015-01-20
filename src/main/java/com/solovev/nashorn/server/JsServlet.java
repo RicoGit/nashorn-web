@@ -35,8 +35,11 @@ public class JsServlet extends HttpServlet {
         PrintWriter writer = resp.getWriter();
 
         try {
+            // получаем урл запроса
             String path = req.getServletPath().substring(1);
+            // мапим его на js файл
             Object result = nashorn.eval(String.format("load('%s')", getPath(path)));
+            // пишем в ответ то что вернул скрипт
             writer.print(result);
 
         } catch (ScriptException e) {
@@ -48,9 +51,9 @@ public class JsServlet extends HttpServlet {
     }
 
 
-    public String getPath(String scriptName) {
+    public static String getPath(String scriptName) {
         return String.format(
-                "%s/webapps/nashorn/WEB-INF/classes/scripts/%s.js",
+                "%s/webapps/nashorn/WEB-INF/classes/scripts/server/%s.js",
                 System.getProperty("catalina.base"),
                 scriptName
         );
