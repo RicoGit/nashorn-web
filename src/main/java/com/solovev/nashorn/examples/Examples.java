@@ -25,9 +25,17 @@ public class Examples {
 
     ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 
+
+
     @Test
     public void eval()
             throws ScriptException {
+
+
+
+
+
+
 
         /* 1 */
 
@@ -62,18 +70,14 @@ public class Examples {
 
 
 
-        /* 3 */
-
-        engine.eval(
-                "function hi(name) { " +
-                        "   return ['hello', ' ', name].join('') " +
-                        "}"
-        );
-
     }
 
 
                /* Invoking Javascript Functions from Java */
+
+
+
+
 
 
     @Test
@@ -84,7 +88,7 @@ public class Examples {
             NoSuchMethodException {
 
 
-        engine.eval( new FileReader("src/main/resources/scripts/examples/ex1.js") );
+        engine.eval( new FileReader("src/main/resources/scripts/examples/invokeFunction.js") );
 
         Invocable invocable = (Invocable) engine;
 
@@ -104,10 +108,47 @@ public class Examples {
 
 
 
-    @Test
+    @Test   // ScriptObjectMirror
     public void invokeFunction2() throws ScriptException, NoSuchMethodException {
 
-        engine.eval(" load('src/main/resources/scripts/examples/ex1.js')" );
+        engine.eval("load('src/main/resources/scripts/examples/invokeFunction.js')" );
+
+        Invocable invocable = (Invocable) engine;
+
+        List<String> list = new ArrayList<>();
+        list.add("user");
+        list.add("admin");
+
+        ScriptObjectMirror resultc =
+                (ScriptObjectMirror) invocable.invokeFunction("c", list);
+
+
+        Assert.assertTrue(resultc.containsKey("name"));
+        Assert.assertEquals("granted authority", resultc.get("name"));
+
+        ArrayList<String> roles =  (ArrayList) resultc.get("roles");
+        Assert.assertEquals("user", roles.get(0));
+//        Assert.assertTrue(list == roles);
+
+        // call function in result object
+        Assert.assertEquals("someVar someParam", resultc.callMember("someFunc", "someParam"));
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+    @Test              //todo as interface
+    public void invokeFunction3() throws ScriptException, NoSuchMethodException {
+
+        engine.eval(" load('src/main/resources/scripts/examples/invokeFunction.js')" );
         Invocable invocable = (Invocable) engine;
 
         List<String> list = new ArrayList<>();
@@ -123,6 +164,31 @@ public class Examples {
         Assert.assertEquals("user", ((ArrayList) resultc.get("roles")).get(0));
 
     }
+
+
+
+
+
+
+
+
+
+
+    /*   Invoking Java Methods from Javascript */
+
+
+    @Test
+    public void javaMethods1() throws ScriptException, NoSuchMethodException {
+
+        engine.eval(" load('src/main/resources/scripts/examples/invokeJava.js')" );
+        Invocable invocable = (Invocable) engine;
+
+        Assert.assertEquals("hello world", invocable.invokeFunction("staticMethod"));
+
+    }
+
+
+
 
 
 
@@ -131,22 +197,75 @@ public class Examples {
 
 
     @Test
-    public void invokeFunction3() throws ScriptException, NoSuchMethodException {
+    public void javaMethods2() throws ScriptException, NoSuchMethodException {
 
-        engine.eval(" load('src/main/resources/scripts/examples/ex1.js')" );
+        engine.eval(" load('src/main/resources/scripts/examples/invokeJava.js')" );
         Invocable invocable = (Invocable) engine;
 
-        List<String> list = new ArrayList<>();
-        list.add("user");
-        list.add("admin");
-
-        ScriptObjectMirror resultc =
-                (ScriptObjectMirror) invocable.invokeFunction("c", list);
-
-
-        Assert.assertTrue(resultc.containsKey("name"));
-        Assert.assertEquals("granted authority", resultc.get("name"));
-        Assert.assertEquals("user", ((ArrayList) resultc.get("roles")).get(0));
+        Assert.assertEquals("два", ((ArrayList<String>)invocable.invokeFunction("useJavaClasses")).get(1));
 
     }
+
+
+
+
+
+
+
+
+
+    @Test
+    public void javaTypes() throws ScriptException, NoSuchMethodException {
+
+        engine.eval(" load('src/main/resources/scripts/examples/invokeJava.js')" );
+        Invocable invocable = (Invocable) engine;
+
+        invocable.invokeFunction("javaTypes");
+
+    }
+
+
+
+
+
+
+
+  @Test
+    public void streams() throws ScriptException, NoSuchMethodException {
+
+        engine.eval(" load('src/main/resources/scripts/examples/invokeJava.js')" );
+        Invocable invocable = (Invocable) engine;
+
+      ArrayList result = ((ArrayList<String>)invocable.invokeFunction("streams"));
+
+      Assert.assertEquals("aaa1", result.get(0));
+      Assert.assertEquals("aaa2", result.get(1));
+
+
+    }
+
+
+    @Test
+    public void multiThreading() throws ScriptException, NoSuchMethodException, InterruptedException {
+
+        engine.eval(" load('src/main/resources/scripts/examples/invokeJava.js')" );
+        Invocable invocable = (Invocable) engine;
+
+        invocable.invokeFunction("multiThreading");
+
+    }
+
+//    @Test
+//    public void extendsJavaClasses() throws ScriptException, NoSuchMethodException, InterruptedException {
+//
+//        engine.eval(" load('src/main/resources/scripts/examples/invokeJava.js')" );
+//        Invocable invocable = (Invocable) engine;
+//
+//        invocable.invokeFunction("extendsJavaClasses");
+//
+//    }
 }
+
+
+
+

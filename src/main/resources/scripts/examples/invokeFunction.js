@@ -11,47 +11,25 @@ function a() {
 }
 
 
-
 function b(text) {
     return 'function b params = ' + text;
 }
 
 
-
-
-
-
-
 function c(array) {
+
+    var someVar = 'someVar';
 
     return {
         _id: '123456',
         name: 'granted authority',
-        roles: array
+        roles: array,
+        someFunc: function(param) {
+            return someVar + " " + param;
+        }
+
     }
 
 }
 
 
-
-
-
-
-
-function checkCredentials(user) {
-
-    var user =  {
-        _id: '123456',
-        name: 'Peter',
-        roles: [ 'user' ],
-        addRole: function(role) {
-            user.roles.push(role)
-        }
-    };
-
-    return user;
-
-}
-
-
- 

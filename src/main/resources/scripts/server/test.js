@@ -14,13 +14,38 @@ var JsServlet = Java.type('com.solovev.nashorn.server.JsServlet');
     load(mustachePath);
 
     var view = {
-        title: "Joe",
+
+        name: 'Nashorn',
         calc: function () {
             return 2 + 4;
-        }
+        },
+        list: [
+            'point 1',
+            'point 2',
+            'point 3'
+        ],
+        listObj: [
+            { name: 'Vasja'},
+            { name: 'Petja'},
+            { name: 'Serega'}
+        ]
     };
 
-    var requestBody = Mustache.render("{{title}} spends {{calc}}", view);
+    var requestBody = Mustache.render(
+
+        '<h1>Hello {{ name }}!<h1>' +
+        '<h3>Calculated value: {{ calc }}<h3>' +
+        '<ul>' +
+        '   {{ #list }}' +
+        '   <li> {{ . }} </li>' +
+        '   {{ /list }}' +
+        '</ul>' +
+        '<br>' +
+        '<ul> ' +
+        '   {{ #listObj }}' +
+        '   <li> {{ name }} </li> ' +
+        '   {{ /listObj }}' +
+        '</ul>', view);
 
     return requestBody;
 
