@@ -5,7 +5,7 @@
  * Time: 10:44
  */
 
-'use strict';
+//'use strict';
 
 
     function staticMethod() {
@@ -22,12 +22,22 @@
 
 
 
+
+
+
+
+
+
+
+
     function useJavaClasses() {
 
         var ArrayList = Java.type('java.util.ArrayList');
         var list = new ArrayList();
-        list.add('1');
+
+        list.add(1);
         list.add('два');
+
         return list;
 
     }
@@ -35,29 +45,51 @@
 
 
 
+
+
+
+
+
+    function myMethod(param) {
+        return 'myMethod return this ' + param;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //        MyJavaClass.fun2(123);
-//        // class java.lang.Integer
-//
+////        // class java.lang.Integer
+////
 //        MyJavaClass.fun2(49.99);
-//        // class java.lang.Double
-//
+////        // class java.lang.Double
+////
 //        MyJavaClass.fun2(true);
-//        // class java.lang.Boolean
-//
-//        MyJavaClass.fun2("hi there")
-//        // class java.lang.String
-//
+////        // class java.lang.Boolean
+////
+//        MyJavaClass.fun2("hi there");
+////        // class java.lang.String
+////
 //        MyJavaClass.fun2(new Number(23));
-//        // class jdk.nashorn.internal.objects.NativeNumber
-//
+////        // class jdk.nashorn.internal.objects.NativeNumber
+////
 //        MyJavaClass.fun2(new Date());
-//        // class jdk.nashorn.internal.objects.NativeDate
-//
+////        // class jdk.nashorn.internal.objects.NativeDate
+////
 //        MyJavaClass.fun2(new RegExp());
-//        // class jdk.nashorn.internal.objects.NativeRegExp
-//
+////        // class jdk.nashorn.internal.objects.NativeRegExp
+////
 //        MyJavaClass.fun2({foo: 'bar'});
-//        // class jdk.nashorn.internal.scripts.JO4
+////        // class jdk.nashorn.internal.scripts.JO4
 
 
 
@@ -68,7 +100,6 @@
         function javaTypes() {
 
 
-
            var intArray = Java.type("int[]");
            var array = new intArray(5);
            array[0] = 1;
@@ -76,20 +107,75 @@
            var javaIntArray = Java.to([3, 5, 7, 11], "int[]");
 
 
-
            var arrayList1 = Java.type('java.util.ArrayList');
            // or
            var arrayList2 = new java.util.ArrayList();
+
+            importClass(java.util.HashSet);
+            var set = new HashSet();
+
+            importPackage(java.util);
+            var list = new ArrayList();
+
+
+            // better
+
+            var CollectionsAndFiles = new JavaImporter(
+                java.util,
+                java.io,
+                java.nio);
+
+            with (CollectionsAndFiles) {   // не работает в strict mode
+                var files = new LinkedHashSet();
+                files.add(new File("Plop"));
+                files.add(new File("Foo"));
+                files.add(new File("w00t.js"));
+            }
+
+            // impl java classes
+
+            var iterator1 = new java.util.Iterator({
+                i: 0,
+                hasNext: function() {
+                    return this.i < 10;
+                },
+                next: function() {
+                    return this.i++;
+                }
+            });
+
+            // or
+
+            var Iterator = Java.type('java.util.Iterator');
+            var iterator2 = Java.extend(Iterator, {
+                i: 0,
+                hasNext: function() {
+                    return this.i < 10;
+                },
+                next: function() {
+                    return this.i++;
+                }
+            });
 
            arrayList2.add(__FILE__);
            arrayList2.add(__LINE__);
            arrayList2.add(__DIR__);
 
-           var jsArray = Java.from(arrayList2);
+           var jsArray = Java.from(arrayList2);  //js native array
 
            return jsArray;
 
        }
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -110,8 +196,9 @@
             list2.add("bbb2");
             list2.add("ddd1");
 
+
             return list2
-                .stream()
+                .parallelStream()
                 .filter(function(el) {
                     return el.startsWith("aaa");
                 })
@@ -147,7 +234,6 @@
         var thread1 = new Thread(new RunnableImpl());
 
         var thread2 = new Thread(function() {
-            var current = Thread.currentThread();
             while (true) {
                 Thread.sleep(3000);
                 print('***********  Thread 2');
@@ -162,25 +248,5 @@
 
     }
 
-
-
-
-
-//    function extendsJavaClasses() {
-//
-//        // мой класс
-//        var SuperRunner = Java.type('com.solovev.nashorn.examples.Examples');
-//
-//        var Runner = Java.extend(SuperRunner);
-//
-//        var runner = new Runner() {
-//            run: function() {
-//                Java.super(runner).run();
-//                print('on my run');
-//            }
-//        }
-//        runner.run();
-//
-//    }
 
 

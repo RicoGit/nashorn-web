@@ -181,6 +181,7 @@ public class Examples {
     public void javaMethods1() throws ScriptException, NoSuchMethodException {
 
         engine.eval(" load('src/main/resources/scripts/examples/invokeJava.js')" );
+
         Invocable invocable = (Invocable) engine;
 
         Assert.assertEquals("hello world", invocable.invokeFunction("staticMethod"));
@@ -200,11 +201,32 @@ public class Examples {
     public void javaMethods2() throws ScriptException, NoSuchMethodException {
 
         engine.eval(" load('src/main/resources/scripts/examples/invokeJava.js')" );
+
         Invocable invocable = (Invocable) engine;
 
         Assert.assertEquals("два", ((ArrayList<String>)invocable.invokeFunction("useJavaClasses")).get(1));
 
     }
+
+
+
+
+    @Test
+    public void javaMethods3() throws ScriptException, NoSuchMethodException {
+
+        engine.eval(" load('src/main/resources/scripts/examples/invokeJava.js')" );
+
+        Invocable invocable = (Invocable) engine;
+
+        MyInterface myInterface = invocable.getInterface(MyInterface.class);
+
+        Assert.assertEquals("myMethod return this param", myInterface.myMethod("param"));
+
+    }
+
+
+
+
 
 
 
@@ -218,11 +240,16 @@ public class Examples {
     public void javaTypes() throws ScriptException, NoSuchMethodException {
 
         engine.eval(" load('src/main/resources/scripts/examples/invokeJava.js')" );
+
         Invocable invocable = (Invocable) engine;
 
         invocable.invokeFunction("javaTypes");
 
     }
+
+
+
+
 
 
 
@@ -238,11 +265,30 @@ public class Examples {
 
       ArrayList result = ((ArrayList<String>)invocable.invokeFunction("streams"));
 
+
       Assert.assertEquals("aaa1", result.get(0));
       Assert.assertEquals("aaa2", result.get(1));
 
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     @Test
@@ -255,15 +301,6 @@ public class Examples {
 
     }
 
-//    @Test
-//    public void extendsJavaClasses() throws ScriptException, NoSuchMethodException, InterruptedException {
-//
-//        engine.eval(" load('src/main/resources/scripts/examples/invokeJava.js')" );
-//        Invocable invocable = (Invocable) engine;
-//
-//        invocable.invokeFunction("extendsJavaClasses");
-//
-//    }
 }
 
 

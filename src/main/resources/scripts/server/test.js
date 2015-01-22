@@ -31,7 +31,7 @@ var JsServlet = Java.type('com.solovev.nashorn.server.JsServlet');
         ]
     };
 
-    var requestBody = Mustache.render(
+    var responseBody = Mustache.render(
 
         '<h1>Hello {{ name }}!<h1>' +
         '<h3>Calculated value: {{ calc }}<h3>' +
@@ -47,6 +47,6 @@ var JsServlet = Java.type('com.solovev.nashorn.server.JsServlet');
         '   {{ /listObj }}' +
         '</ul>', view);
 
-    return requestBody;
+    return responseBody;
 
 })();
